@@ -72,8 +72,8 @@ for _, _, files in os.walk("."):
 def portfolio_stats(weights, df):
     weights = np.array(weights)
     dfr = np.array(((1 + df).cumprod() - 1).iloc[-1])
-    annual_return = ((1 + np.dot(weights.T, dfr)) ** (252/5)) - 1
-    annual_volatility = np.sqrt(weights.T @ df.cov() * 252 @ weights)
+    annual_return = np.dot(weights.T, dfr)
+    annual_volatility = np.sqrt(weights.T @ df.cov() * 5 @ weights)
     risk_return = annual_return / annual_volatility
     return {'return': annual_return, 
             'risk': annual_volatility, 
@@ -83,12 +83,14 @@ df = pd.DataFrame()
 for filename in list_archive:
     group_data = reading_excel_data(filename)
     lst_returns = []
-    group_data[3] = ['28/03/2022', '03/04/2022']
     for asset in group_data[0]:
         # is a ETF, investing has to pass as string format
         if len(asset) == 3:
             lst_returns.append(etf_historical_returns(asset, group_data[3][0], group_data[3][1]))
         # is a brStock, yahoo finance has to pass datetime
+        elif asset = 'CDI':
+            cdi_daily = (1+0.1165) ** (5/252)
+            lst_returns.append([cdi_daily]) * 4)
         else:
             lst_returns.append(stocks_historical_returns(asset, datetime_fmt(group_data[3][0]), datetime_fmt(group_data[3][1])))
     historical_returns = pd.concat(lst_returns, axis = 1)
